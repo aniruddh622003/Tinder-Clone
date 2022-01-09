@@ -33,11 +33,9 @@ const LoginScreen = () => {
             tw("absolute bottom-40 w-52 bg-white p-4 rounded-2xl"),
             { marginHorizontal: "25%" },
           ]}
+          onPress={signInWithGoogle}
         >
-          <Text
-            style={tw("text-center font-semibold")}
-            onPress={signInWithGoogle}
-          >
+          <Text style={tw("text-center font-semibold")}>
             {loading ? "Loading..." : "Sign in"}
           </Text>
         </TouchableOpacity>
