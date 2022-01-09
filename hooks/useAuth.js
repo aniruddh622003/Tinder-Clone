@@ -22,7 +22,8 @@ const config = {
 export const AuthProvider = ({ children }) => {
   const [error, setError] = React.useState(null);
   const [user, setUser] = React.useState(null);
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
+  const [loadingini, setLoadingini] = React.useState(true);
 
   React.useEffect(
     () =>
@@ -32,7 +33,7 @@ export const AuthProvider = ({ children }) => {
         } else {
           setUser(null);
         }
-        setLoading(false);
+        setLoadingini(false);
       }),
     []
   );
@@ -70,21 +71,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={memoedValue}>
-      {loading && (
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ textAlign: "center", fontSize: 30 }}>
-            Tinder Clone
-          </Text>
-        </View>
-      )}
-      {!loading && children}
+      {!loadingini && children}
     </AuthContext.Provider>
   );
 };
