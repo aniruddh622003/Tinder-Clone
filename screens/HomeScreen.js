@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useRef } from "react";
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import useAuth from "../hooks/useAuth";
 import tw from "tailwind-rn";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Entypo } from "@expo/vector-icons";
 import Swiper from "react-native-deck-swiper";
 const DUMMY_DATA = [
   {
@@ -51,11 +51,30 @@ const DUMMY_DATA = [
       "https://www.dmarge.com/wp-content/uploads/2021/01/dwayne-the-rock-.jpg",
     key: 4,
   },
+  {
+    firstName: "Aniruddh",
+    lastName: "Upadhyay",
+    job: "Student",
+    age: 27,
+    photoURL:
+      "https://www.dmarge.com/wp-content/uploads/2021/01/dwayne-the-rock-.jpg",
+    key: 5,
+  },
+  {
+    firstName: "Aniruddh",
+    lastName: "Upadhyay",
+    job: "Student",
+    age: 27,
+    photoURL:
+      "https://www.dmarge.com/wp-content/uploads/2021/01/dwayne-the-rock-.jpg",
+    key: 6,
+  },
 ];
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const { user, logout } = useAuth();
+  const swipeRef = useRef(null);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -72,9 +91,9 @@ const HomeScreen = () => {
             source={{ uri: user.photoURL }}
           />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Modal")}>
           <Image
-            style={tw("h-10 w-14")}
+            style={tw("h-14 w-14")}
             source={{
               uri: "https://assets.stickpng.com/images/580b57fcd9996e24bc43c53b.png",
             }}
@@ -90,6 +109,7 @@ const HomeScreen = () => {
           containerStyle={{
             backgroundColor: "transparent",
           }}
+          ref={swipeRef}
           stackSize={5}
           cardIndex={0}
           verticalSwipe={false}
@@ -164,7 +184,27 @@ const HomeScreen = () => {
             console.log(cardIndex);
           }}
           onSwipedLeft={() => console.log("Pass")}
+          onSwipedRight={() => console.log("Match")}
         />
+      </View>
+
+      <View style={tw("flex flex-row justify-evenly")}>
+        <TouchableOpacity
+          onPress={() => swipeRef.current.swipeLeft()}
+          style={tw(
+            "justify-center items-center rounded-full w-16 h-16 bg-red-200"
+          )}
+        >
+          <Entypo name="cross" size={25} color="red" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => swipeRef.current.swipeRight()}
+          style={tw(
+            "justify-center items-center rounded-full w-16 h-16 bg-green-200"
+          )}
+        >
+          <Entypo name="heart" size={25} color="green" />
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
