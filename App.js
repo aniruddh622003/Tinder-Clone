@@ -1,5 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { StatusBar } from "expo-status-bar";
+import { LogBox } from "react-native";
+LogBox.ignoreAllLogs();
 import { Button, StyleSheet, Text, View } from "react-native";
 import tw from "tailwind-rn";
 import { AuthProvider } from "./hooks/useAuth";

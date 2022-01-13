@@ -14,6 +14,8 @@ import useAuth from "../hooks/useAuth";
 import tw from "tailwind-rn";
 import { Ionicons, Entypo } from "@expo/vector-icons";
 import Swiper from "react-native-deck-swiper";
+import { collection, doc, onSnapshot } from "firebase/firestore";
+import { db } from "../firebase";
 const DUMMY_DATA = [
   {
     firstName: "Aniruddh",
@@ -79,7 +81,32 @@ const HomeScreen = () => {
 
   React.useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
+    onSnapshot(doc(db, "user", user.uid), (snap) => {
+      if (!snap.exists()) {
+        navigation.navigate("Modal");
+      }
+    });
   }, []);
+
+  React.useEffect(() => {
+    let unsub;
+    const fetchCards = async () => {
+      unsub = onSnapshot(collection(db, "user"), (snap) => {
+        // console.log(snap.docs);
+        setProfiles(
+          snap.docs
+            .filter((doc) => doc.id !== user.uid)
+            .map((doc, id) => {
+              return { id: doc.id, ...doc.data() };
+            })
+        );
+      });
+    };
+    fetchCards();
+    return unsub;
+  }, []);
+
+  console.log(profiles);
 
   return (
     <SafeAreaView
@@ -174,7 +201,7 @@ const HomeScreen = () => {
                 >
                   <View>
                     <Text style={tw("text-xl font-bold")}>
-                      {card.firstName} {card.lastName}
+                      {card.displayName}
                     </Text>
                     <Text>{card.job}</Text>
                   </View>
@@ -208,7 +235,7 @@ const HomeScreen = () => {
         />
       </View>
 
-      <View style={tw("flex flex-row justify-evenly")}>
+      <View style={tw("flex flex-row justify-evenly mb-5")}>
         <TouchableOpacity
           onPress={() => swipeRef.current.swipeLeft()}
           style={tw(
