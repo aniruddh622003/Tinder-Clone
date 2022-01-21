@@ -2,8 +2,10 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import tw from "tailwind-rn";
 import { Foundation, Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const Header = ({ title, callEnabled }) => {
+  const nav = useNavigation();
   return (
     <View style={tw("p-2 flex-row items-center justify-between")}>
       <View style={tw("flex flex-row items-center")}>
