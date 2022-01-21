@@ -1,10 +1,13 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, StatusBar } from "react-native";
+import ChatList from "../components/ChatList";
+import Header from "../components/Header";
 
 const ChatScreen = () => {
   return (
-    <View>
-      <Text>I am ChatScreen</Text>
+    <View style={{ marginTop: StatusBar.currentHeight + 10 }}>
+      <Header title="Chat" />
+      <ChatList />
     </View>
   );
 };

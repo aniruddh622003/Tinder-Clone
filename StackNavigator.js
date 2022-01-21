@@ -18,7 +18,11 @@ const StackNavigator = () => {
         <>
           <stack.Group>
             <stack.Screen name="Home" component={HomeScreen} />
-            <stack.Screen name="Chat" component={ChatScreen} />
+            <stack.Screen
+              name="Chat"
+              component={ChatScreen}
+              options={{ headerShown: false }}
+            />
           </stack.Group>
           <stack.Group screenOptions={{ presentation: "modal" }}>
             <stack.Screen name="Modal" component={ModalScreen} />
