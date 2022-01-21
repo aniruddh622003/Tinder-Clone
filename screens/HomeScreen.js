@@ -17,69 +17,16 @@ import Swiper from "react-native-deck-swiper";
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   onSnapshot,
   query,
+  serverTimestamp,
   setDoc,
   where,
 } from "firebase/firestore";
 import { db } from "../firebase";
-const DUMMY_DATA = [
-  {
-    firstName: "Aniruddh",
-    lastName: "Upadhyay",
-    job: "Student",
-    age: 27,
-    photoURL:
-      "https://www.dmarge.com/wp-content/uploads/2021/01/dwayne-the-rock-.jpg",
-    key: 1,
-  },
-  {
-    firstName: "Aniruddh",
-    lastName: "Upadhyay",
-    job: "Student",
-    age: 27,
-    photoURL:
-      "https://www.dmarge.com/wp-content/uploads/2021/01/dwayne-the-rock-.jpg",
-    key: 2,
-  },
-  {
-    firstName: "Aniruddh",
-    lastName: "Upadhyay",
-    job: "Student",
-    age: 27,
-    photoURL:
-      "https://www.dmarge.com/wp-content/uploads/2021/01/dwayne-the-rock-.jpg",
-    key: 3,
-  },
-  {
-    firstName: "Aniruddh",
-    lastName: "Upadhyay",
-    job: "Student",
-    age: 27,
-    photoURL:
-      "https://www.dmarge.com/wp-content/uploads/2021/01/dwayne-the-rock-.jpg",
-    key: 4,
-  },
-  {
-    firstName: "Aniruddh",
-    lastName: "Upadhyay",
-    job: "Student",
-    age: 27,
-    photoURL:
-      "https://www.dmarge.com/wp-content/uploads/2021/01/dwayne-the-rock-.jpg",
-    key: 5,
-  },
-  {
-    firstName: "Aniruddh",
-    lastName: "Upadhyay",
-    job: "Student",
-    age: 27,
-    photoURL:
-      "https://www.dmarge.com/wp-content/uploads/2021/01/dwayne-the-rock-.jpg",
-    key: 6,
-  },
-];
+import generateID from "../lib/generateID";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -143,8 +90,41 @@ const HomeScreen = () => {
   const swipeRight = async (index) => {
     if (!profiles[index]) return;
     const userSwiped = profiles[index];
-    console.log(`Swiped MATCH on ${userSwiped.displayName}`);
-    setDoc(doc(db, "user", user.uid, "swipes", userSwiped.id), userSwiped);
+    const loggedInProfile = await (
+      await getDoc(doc(db, "user", user.uid))
+    ).data();
+
+    getDoc(doc(db, "user", userSwiped.id, "swipes", user.uid)).then(
+      (documentSnap) => {
+        if (documentSnap.exists()) {
+          console.log(`You have Matched with ${userSwiped.displayName}`);
+          setDoc(
+            doc(db, "user", user.uid, "swipes", userSwiped.id),
+            userSwiped
+          );
+
+          setDoc(doc(db, "matches", generateID(user.uid, userSwiped.id)), {
+            users: {
+              [user.uid]: loggedInProfile,
+              [userSwiped.id]: userSwiped,
+            },
+            usersMatched: [user.uid, userSwiped.id],
+            timestamp: serverTimestamp(),
+          });
+
+          navigation.navigate("Match", {
+            loggedInProfile,
+            userSwiped,
+          });
+        } else {
+          console.log(`Swiped MATCH on ${userSwiped.displayName}`);
+          setDoc(
+            doc(db, "user", user.uid, "swipes", userSwiped.id),
+            userSwiped
+          );
+        }
+      }
+    );
   };
 
   return (
